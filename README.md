@@ -21,8 +21,10 @@ oracle/logistics/
 ├── 02_procedures.sql       — хранимые процедуры: приёмка, заказ, отгрузка, списание, автозаказ
 ├── 03_functions.sql        — функции: остатки, оборачиваемость, прогноз дефицита, ABC-классификация
 ├── 04_views.sql            — представления: отчёты по остаткам, дефицит, KPI поставщиков, оборачиваемость
-├── 05_analytics_queries.sql — аналитические запросы: ABC-анализ, когортный анализ, выявление аномалий
-└── 06_seed_data.sql        — тестовые данные
+├── 05_analytics_queries.sql  — аналитические запросы: ABC-анализ, когортный анализ, выявление аномалий
+├── 06_seed_data.sql         — тестовые данные
+├── 07_execution_plans.sql   — планы выполнения: EXPLAIN PLAN, реальный план, хинты, V$SQL, AWR, SQL Monitor
+└── 08_advanced_procedures.sql — пакеты, BULK COLLECT/FORALL, materialized views, пайплайн-функции, триггеры
 ```
 
 **Ключевые процедуры:**
@@ -40,3 +42,19 @@ oracle/logistics/
 - Выявление аномалий в заказах (z-score)
 - KPI поставщиков
 - PIVOT-матрица поставщик × категория
+
+**Планы выполнения:**
+- `EXPLAIN PLAN` + `DBMS_XPLAN.DISPLAY` — оценочный план
+- `gather_plan_statistics` + `DBMS_XPLAN.DISPLAY_CURSOR` — реальный план с A-Rows, Buffers, A-Time
+- Сравнение планов с хинтами (`USE_HASH`, `FULL`, `PARALLEL`) и без
+- Анализ расхождений E-Rows vs A-Rows через `V$SQL_PLAN_STATISTICS_ALL`
+- Поиск тяжёлых запросов через `V$SQL`
+- `DBMS_SQL_MONITOR` для мониторинга отдельных запросов
+- Адаптивные планы (`+ADAPTIVE`)
+
+**Продвинутые конструкции:**
+- PL/SQL пакет `logistics_pkg` — сверка остатков, пакетная отгрузка, EOQ
+- Пайплайн-функция (`PIPELINED`) для потоковой выдачи данных
+- `BULK COLLECT` + `FORALL` для массовых операций
+- `MATERIALIZED VIEW` с FAST REFRESH и Query Rewrite
+- Триггер с `AUTONOMOUS_TRANSACTION`
